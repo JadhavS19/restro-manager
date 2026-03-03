@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const menuController = require('../controllers/menuController');
 const { protect } = require('../middleware/authMiddleware');
-const { isAdmin } = require('../middleware/roleCHeck');
+const { isAdmin } = require('../middleware/roleCheck');
 
 // GET /api/menu
 router.get('/', menuController.getMenu);

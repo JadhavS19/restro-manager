@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware'); // We'll make this next
-const { isAdmin } = require('../middleware/roleCHeck');
+const { isAdmin } = require('../middleware/roleCheck');
 
 router.post('/login', authController.login);
 
