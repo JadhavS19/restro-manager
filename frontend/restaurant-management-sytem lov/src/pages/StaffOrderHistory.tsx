@@ -32,7 +32,8 @@ const StaffOrderHistory = () => {
                     </div>
                     <div>
                         <h1 className="text-lg font-bold font-serif leading-none">RestroManager</h1>
-                        <p className="text-xs text-muted-foreground">My Orders · {currentUser?.name}</p>
+                        <p className="text-[10px] font-semibold text-primary/80 mt-0.5">Tanisha Restaurant</p>
+                        <p className="text-xs text-muted-foreground mt-1">My Orders · {currentUser?.name}</p>
                     </div>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => navigate('/staff')} className="gap-2">

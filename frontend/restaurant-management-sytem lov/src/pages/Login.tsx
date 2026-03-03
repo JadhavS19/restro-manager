@@ -22,7 +22,7 @@ const Login = () => {
     setLoading(true);
 
     // Call the async login from context
-    const success = await login(email, password); 
+    const success = await login(email, password);
 
     if (success) {
       toast({ title: 'Success', description: 'Welcome back!' });
@@ -63,6 +63,7 @@ const Login = () => {
           </div>
           <div>
             <CardTitle className="text-3xl">RestroManager</CardTitle>
+            <p className="text-sm font-semibold text-primary mt-1">Tanisha Restaurant</p>
             <CardDescription className="mt-2 text-base">
               Sign in to manage your restaurant
             </CardDescription>

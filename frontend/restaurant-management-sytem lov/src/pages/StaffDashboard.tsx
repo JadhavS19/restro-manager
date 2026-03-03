@@ -88,7 +88,8 @@ const StaffDashboard = () => {
           </div>
           <div>
             <h1 className="text-lg font-bold font-serif leading-none">RestroManager</h1>
-            <p className="text-xs text-muted-foreground">Welcome, {currentUser?.name}</p>
+            <p className="text-[10px] font-semibold text-primary/80 mt-0.5">Tanisha Restaurant</p>
+            <p className="text-xs text-muted-foreground mt-1">Welcome, {currentUser?.name}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">

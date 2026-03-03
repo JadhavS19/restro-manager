@@ -29,8 +29,9 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             <ChefHat className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold font-serif">RestroManager</h2>
-            <p className="text-xs text-sidebar-foreground/60">Admin Panel</p>
+            <h2 className="text-lg font-bold font-serif leading-tight">RestroManager</h2>
+            <p className="text-xs font-semibold text-primary/90 leading-tight mt-0.5">Tanisha Restaurant</p>
+            <p className="text-[10px] uppercase tracking-wider text-sidebar-foreground/50 mt-1">Admin Panel</p>
           </div>
         </div>
         <nav className="flex-1 p-4 space-y-1">
@@ -79,7 +80,10 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         <header className="md:hidden flex items-center justify-between p-4 border-b bg-card">
           <div className="flex items-center gap-2">
             <ChefHat className="h-5 w-5 text-primary" />
-            <span className="font-bold font-serif">RestroManager</span>
+            <div className="flex flex-col">
+              <span className="font-bold font-serif leading-none">RestroManager</span>
+              <span className="text-[10px] text-muted-foreground font-semibold">Tanisha Restaurant</span>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             {navItems.map(item => (
