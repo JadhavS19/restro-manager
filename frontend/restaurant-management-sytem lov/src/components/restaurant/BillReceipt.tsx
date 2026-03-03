@@ -135,7 +135,7 @@ const BillReceipt = ({ order, onNewOrder }: BillReceiptProps) => {
   // --- DATA NORMALIZATION ---
   // 1. Handle Date: Convert string from DB to Date object
   const orderDate = order?.createdAt ? new Date(order.createdAt) : new Date();
-  
+
   // 2. Handle Items: Sequelize uses 'MenuItems', Mock used 'items'
   // We normalize them into a single array the UI can understand
   const itemsToDisplay = (order?.MenuItems || order?.items || []).map((item: any) => ({
@@ -190,7 +190,7 @@ const BillReceipt = ({ order, onNewOrder }: BillReceiptProps) => {
             <span className="w-20 text-right">Amount</span>
           </div>
           <div className="border-t border-border" />
-          
+
           {/* SAFE MAPPING: This avoids the "undefined" crash */}
           {itemsToDisplay.map((item: any, index: number) => (
             <div key={item.id || index} className="flex justify-between text-xs text-card-foreground">
@@ -226,14 +226,18 @@ const BillReceipt = ({ order, onNewOrder }: BillReceiptProps) => {
 
         <div className="border-t border-dashed border-border my-3" />
 
-        <div className="text-center">
-          <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-            order?.paymentMethod === 'cash'
+        <div className="text-center space-y-2">
+          <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${order?.paymentMethod === 'cash'
               ? 'bg-success/10 text-success'
               : 'bg-primary/10 text-primary'
-          }`}>
+            }`}>
             Paid via {order?.paymentMethod === 'cash' ? 'CASH' : 'ONLINE'}
           </div>
+          {order?.transactionId && (
+            <div className="text-[10px] text-muted-foreground font-mono truncate px-2">
+              Txn ID: {order.transactionId}
+            </div>
+          )}
         </div>
 
         <div className="border-t border-dashed border-border my-3" />

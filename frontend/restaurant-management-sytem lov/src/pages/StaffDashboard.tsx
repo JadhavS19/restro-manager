@@ -44,10 +44,10 @@ const StaffDashboard = () => {
     setOrderItems(prev => prev.filter(i => i.menuItem.id !== itemId));
   };
 
-  const handlePaymentSelect = async (method: 'cash' | 'online') => {
+  const handlePaymentSelect = async (method: 'cash' | 'online', transactionId?: string) => {
     try {
       // 1. Trigger the async call to our Node.js backend
-      const order = await addOrder(tableNumber, orderItems, method);
+      const order = await addOrder(tableNumber, orderItems, method, transactionId);
 
       if (order) {
         // 2. Only if the backend confirms the save, we show the receipt

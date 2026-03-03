@@ -94,9 +94,16 @@ const StaffOrderHistory = () => {
                                             <TableCell className="text-muted-foreground">{formatCurrency(Number(order.cgst) + Number(order.sgst))}</TableCell>
                                             <TableCell className="font-semibold">{formatCurrency(order.total)}</TableCell>
                                             <TableCell>
-                                                <Badge variant={order.paymentMethod === 'cash' ? 'secondary' : 'default'}>
-                                                    {order.paymentMethod === 'cash' ? 'Cash' : 'Online'}
-                                                </Badge>
+                                                <div className="flex flex-col gap-1">
+                                                    <Badge variant={order.paymentMethod === 'cash' ? 'secondary' : 'default'} className="w-fit">
+                                                        {order.paymentMethod === 'cash' ? 'Cash' : 'Online'}
+                                                    </Badge>
+                                                    {order.transactionId && (
+                                                        <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[100px]" title={order.transactionId}>
+                                                            ID: {order.transactionId}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </TableCell>
                                             <TableCell className="text-muted-foreground whitespace-nowrap">
                                                 {format(new Date(order.createdAt), 'dd/MM HH:mm')}

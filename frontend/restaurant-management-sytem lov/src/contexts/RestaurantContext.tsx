@@ -261,7 +261,7 @@ interface RestaurantContextType {
   addStaffMember: (staff: Omit<StaffMember, 'id'>) => Promise<void>;
   updateStaffMember: (id: string, updates: Partial<StaffMember>) => Promise<void>;
   deleteStaffMember: (id: string) => Promise<void>;
-  addOrder: (tableNumber: number, items: OrderItem[], paymentMethod: 'cash' | 'online') => Promise<Order | null>;
+  addOrder: (tableNumber: number, items: OrderItem[], paymentMethod: 'cash' | 'online', transactionId?: string) => Promise<Order | null>;
   fetchMyOrders: () => Promise<void>;
 }
 
@@ -434,12 +434,14 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
   const addOrder = useCallback(async (
     tableNumber: number,
     items: OrderItem[],
-    paymentMethod: 'cash' | 'online'
+    paymentMethod: 'cash' | 'online',
+    transactionId?: string
   ): Promise<Order | null> => {
     try {
       const orderPayload = {
         tableNumber,
         paymentMethod,
+        transactionId,
         // Map frontend items to what the backend expects (just ID and quantity)
         items: items.map(item => ({
           menuItemId: item.menuItem.id,

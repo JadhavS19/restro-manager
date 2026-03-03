@@ -20,6 +20,7 @@ export interface Order {
   sgst: number;
   total: number;
   paymentMethod: 'cash' | 'online';
+  transactionId?: string;
   createdAt: Date;
   staffName: string;
 }
