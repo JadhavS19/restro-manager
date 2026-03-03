@@ -8,7 +8,7 @@ const { sequelize } = require('../config/db'); // ✅ Destructure the instance
 const Order = sequelize.define('Order', {
   id: {
     type: DataTypes.STRING,
-    primaryKey: true, 
+    primaryKey: true,
     // We will generate custom IDs like 'ORD-0001' in the Service layer
   },
   tableNumber: {
@@ -38,6 +38,10 @@ const Order = sequelize.define('Order', {
   staffName: {
     type: DataTypes.STRING, // Snapshot of the staff member's name at time of order
     allowNull: false,
+  },
+  transactionId: {
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 }, {
   timestamps: true,

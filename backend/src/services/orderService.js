@@ -2,7 +2,7 @@ const { Order, MenuItem, OrderItem, sequelize } = require('../models');
 
 class OrderService {
   async createOrder(orderData, user) {
-    const { tableNumber, items, paymentMethod } = orderData;
+    const { tableNumber, items, paymentMethod, transactionId } = orderData;
 
     // Start a Transaction (if one part fails, nothing is saved to DB)
     const t = await sequelize.transaction();
@@ -37,6 +37,7 @@ class OrderService {
         sgst,
         total,
         paymentMethod,
+        transactionId,
         staffName: user.name,
         userId: user.id
       }, { transaction: t });
