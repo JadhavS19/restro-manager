@@ -11,11 +11,19 @@ import { format } from 'date-fns';
 const AdminDashboard = () => {
   const { orders, staffMembers, menuItems } = useRestaurant();
 
-  const todayOrders = orders.filter(o => isToday(o.createdAt));
+  // Normalize data: ensure dates are Date objects and numbers are Numbers
+  const normalizedOrders = (orders || []).map(o => ({
+    ...o,
+    createdAt: new Date(o.createdAt),
+    total: Number(o.total || 0),
+    subtotal: Number(o.subtotal || 0)
+  }));
+
+  const todayOrders = normalizedOrders.filter(o => isToday(o.createdAt));
   const todayRevenue = todayOrders.reduce((sum, o) => sum + o.total, 0);
-  const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
-  const activeStaff = staffMembers.filter(s => s.active).length;
-  const recentOrders = orders.slice(0, 10);
+  const totalSales = normalizedOrders.reduce((sum, o) => sum + o.total, 0);
+  const activeStaff = (staffMembers || []).filter(s => s.active).length;
+  const recentOrders = normalizedOrders.slice(0, 10);
 
   return (
     <AdminLayout>
@@ -57,9 +65,9 @@ const AdminDashboard = () => {
                     <TableRow key={order.id}>
                       <TableCell className="font-mono text-sm">{order.id}</TableCell>
                       <TableCell>{order.tableNumber}</TableCell>
-<TableCell>
-  {(order.items ?? []).reduce((sum, i) => sum + i.quantity, 0)} items
-</TableCell>                      <TableCell className="font-semibold">{formatCurrency(order.total)}</TableCell>
+                      <TableCell>
+                        {(order.items ?? []).reduce((sum, i) => sum + i.quantity, 0)} items
+                      </TableCell>                      <TableCell className="font-semibold">{formatCurrency(order.total)}</TableCell>
                       <TableCell>
                         <Badge variant={order.paymentMethod === 'cash' ? 'secondary' : 'default'}>
                           {order.paymentMethod === 'cash' ? 'Cash' : 'Online'}
