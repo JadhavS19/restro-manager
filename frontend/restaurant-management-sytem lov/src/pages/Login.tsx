@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { UtensilsCrossed } from 'lucide-react';
+import { UtensilsCrossed, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
@@ -58,14 +58,17 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
       <Card className="w-full max-w-md shadow-2xl border-0">
         <CardHeader className="text-center space-y-4 pb-2">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="w-fit mb-4 gap-2">
+            <ArrowLeft className="h-4 w-4" /> Back to Home
+          </Button>
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
             <UtensilsCrossed className="h-8 w-8" />
           </div>
           <div>
-            <CardTitle className="text-3xl">RestroManager</CardTitle>
-            <p className="text-sm font-semibold text-primary mt-1">Tanisha Restaurant</p>
+            <CardTitle className="text-3xl">Staff Portal</CardTitle>
+            <p className="text-sm font-semibold text-primary mt-1">Management Console</p>
             <CardDescription className="mt-2 text-base">
-              Sign in to manage your restaurant
+              Authorized access for restaurant personnel only
             </CardDescription>
           </div>
         </CardHeader>

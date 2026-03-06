@@ -8,7 +8,8 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/menu', label: 'Menu', icon: UtensilsCrossed, end: false },
-  { to: '/admin/staff', label: 'Staff', icon: Users, end: false },
+  { to: '/admin/staff', label: 'Manage Team', icon: ChefHat, end: false },
+  { to: '/admin/users', label: 'User Directory', icon: Users, end: false },
   { to: '/admin/orders', label: 'Orders', icon: ClipboardList, end: false },
 ];
 

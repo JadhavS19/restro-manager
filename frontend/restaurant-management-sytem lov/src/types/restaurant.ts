@@ -34,6 +34,7 @@ export interface StaffMember {
   email: string;
   role: 'admin' | 'staff' | 'customer';
   active: boolean;
+  createdAt?: string | Date;
 }
 
 export type UserRole = 'admin' | 'staff' | 'customer';

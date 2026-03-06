@@ -9,6 +9,7 @@ import StaffDashboard from "./pages/StaffDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import MenuManagement from "./pages/MenuManagement";
 import StaffManagement from "./pages/StaffManagement";
+import UserManagement from "./pages/UserManagement";
 import OrderHistory from "./pages/OrderHistory";
 import StaffOrderHistory from "./pages/StaffOrderHistory";
 import KitchenDashboard from "./pages/KitchenDashboard";
@@ -27,7 +28,10 @@ const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children, requiredRole }: { children: React.ReactNode; requiredRole?: 'admin' | 'staff' | 'customer' }) => {
   const { currentUser } = useRestaurant();
-  if (!currentUser) return <Navigate to="/auth" replace />;
+  if (!currentUser) {
+    if (requiredRole === 'customer') return <Navigate to="/auth" replace />;
+    return <Navigate to="/staff/login" replace />;
+  }
   if (requiredRole) {
     if (requiredRole === 'staff' && (currentUser.role === 'admin' || currentUser.role === 'staff')) {
       return <>{children}</>;
@@ -55,13 +59,14 @@ const App = () => (
             <Route path="/receipt/:orderId" element={<CustomerReceipt />} />
 
             {/* Auth & Admin Routes */}
-            <Route path="/login" element={<Login />} />
+            <Route path="/staff/login" element={<Login />} />
             <Route path="/staff" element={<ProtectedRoute requiredRole="staff"><StaffDashboard /></ProtectedRoute>} />
             <Route path="/staff/kitchen" element={<ProtectedRoute requiredRole="staff"><KitchenDashboard /></ProtectedRoute>} />
             <Route path="/staff/orders" element={<ProtectedRoute requiredRole="staff"><StaffOrderHistory /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/menu" element={<ProtectedRoute requiredRole="admin"><MenuManagement /></ProtectedRoute>} />
             <Route path="/admin/staff" element={<ProtectedRoute requiredRole="admin"><StaffManagement /></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><UserManagement /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute requiredRole="admin"><OrderHistory /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFound />} />

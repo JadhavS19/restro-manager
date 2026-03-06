@@ -30,22 +30,24 @@ const CustomerHome = () => {
                         Where every dish tells a story of tradition, taste, and timeless culinary artistry.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button
-                            size="lg"
-                            className="h-16 px-10 text-xl font-bold rounded-full shadow-2xl transition-transform hover:scale-105"
-                            onClick={() => navigate("/menu")}
-                        >
-                            Explore Menu
-                        </Button>
                         {!currentUser ? (
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="h-16 px-10 text-xl font-bold rounded-full border-white text-white hover:bg-white/10 backdrop-blur-md"
-                                onClick={() => navigate("/auth")}
-                            >
-                                Sign In / Join
-                            </Button>
+                            <>
+                                <Button
+                                    size="lg"
+                                    className="h-16 px-10 text-xl font-bold rounded-full shadow-2xl transition-transform hover:scale-105"
+                                    onClick={() => navigate("/auth")}
+                                >
+                                    Login as Customer
+                                </Button>
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="h-16 px-10 text-xl font-bold rounded-full border-white text-white hover:bg-white/10 backdrop-blur-md"
+                                    onClick={() => navigate("/staff/login")}
+                                >
+                                    Login as Staff
+                                </Button>
+                            </>
                         ) : (
                             <Button
                                 size="lg"
@@ -57,7 +59,7 @@ const CustomerHome = () => {
                                     else navigate("/menu");
                                 }}
                             >
-                                {currentUser.role === 'customer' ? "My Gourmet Portal" : "Admin Panel"}
+                                {currentUser.role === 'customer' ? "Go to Menu" : "Admin Panel"}
                             </Button>
                         )}
                     </div>
