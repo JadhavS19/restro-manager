@@ -62,10 +62,19 @@ const CustomerReceipt = () => {
                     </CardHeader>
 
                     <CardContent className="p-8">
-                        <div className="flex justify-between items-center mb-6 py-2 border-b">
-                            <span className="font-bold">Table: {order.tableNumber}</span>
-                            <span className="text-muted-foreground">{new Date(order.createdAt).toLocaleString()}</span>
+                        <div className="grid grid-cols-2 gap-4 mb-6 py-4 border-b">
+                            <div>
+                                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Customer</p>
+                                <p className="font-bold">{order.staffName}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Table</p>
+                                <p className="font-bold">{order.tableNumber}</p>
+                            </div>
                         </div>
+                        <p className="text-[10px] text-center text-muted-foreground uppercase font-bold tracking-widest mb-6">
+                            {new Date(order.createdAt).toLocaleString()}
+                        </p>
 
                         <div className="space-y-4 mb-8">
                             {order.items.map((item, idx) => (

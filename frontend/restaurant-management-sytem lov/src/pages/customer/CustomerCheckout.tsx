@@ -69,6 +69,24 @@ const CustomerCheckout = () => {
 
             <main className="container mx-auto px-4 py-8 max-w-2xl">
                 <div className="space-y-6">
+                    {/* Customer Info */}
+                    <Card className="border-none shadow-lg bg-muted/20">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Customer Details</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                                    {currentUser.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <p className="font-black text-lg">{currentUser.name}</p>
+                                    <p className="text-sm text-muted-foreground">{currentUser.email}</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     {/* Table Selection */}
                     <Card className="border-none shadow-lg">
                         <CardHeader>

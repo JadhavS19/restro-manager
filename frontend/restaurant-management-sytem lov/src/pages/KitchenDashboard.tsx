@@ -4,7 +4,7 @@ import { formatCurrency, Order } from '@/types/restaurant';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChefHat, Clock, CheckCircle2, XCircle, PlayCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { ChefHat, Clock, CheckCircle2, XCircle, PlayCircle, Loader2, ArrowLeft, User } from 'lucide-react';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -83,7 +83,11 @@ const KitchenDashboard = () => {
                                         </div>
                                         <div className="text-right">
                                             <p className="text-2xl font-black text-primary">Table {order.tableNumber}</p>
-                                            <p className="text-[10px] text-muted-foreground font-medium uppercase">{format(new Date(order.createdAt), 'hh:mm a')}</p>
+                                            <div className="flex items-center justify-end gap-1 text-muted-foreground mt-1">
+                                                <User className="h-3 w-3" />
+                                                <span className="text-[10px] font-bold uppercase">{order.staffName}</span>
+                                            </div>
+                                            <p className="text-[10px] text-muted-foreground font-medium uppercase mt-1">{format(new Date(order.createdAt), 'hh:mm a')}</p>
                                         </div>
                                     </div>
                                 </CardHeader>
