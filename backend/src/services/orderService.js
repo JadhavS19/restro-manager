@@ -30,7 +30,7 @@ class OrderService {
 
       // 3. Create the Order record
       const order = await Order.create({
-        id: `ORD-${Date.now().toString().slice(-6)}`, // Simple unique ID logic
+        id: `ORD-${Date.now().toString().slice(-6)}`,
         tableNumber,
         subtotal,
         cgst,
@@ -38,8 +38,8 @@ class OrderService {
         total,
         paymentMethod,
         transactionId,
-        staffName: user.name,
-        userId: user.id
+        staffName: user ? user.name : 'Customer',
+        userId: user ? user.id : null
       }, { transaction: t });
 
       // 4. Link items to the order in the Join Table (OrderItem)
@@ -51,25 +51,65 @@ class OrderService {
       }
 
       await t.commit();
-      return await Order.findByPk(order.id, {
+      const finalOrder = await Order.findByPk(order.id, {
         include: [{ model: MenuItem }]
       });
+      return this.mapOrder(finalOrder);
     } catch (error) {
-      await t.transaction.rollback();
+      if (t) await t.rollback();
       throw error;
     }
   }
 
   async getAllOrders() {
-    return await Order.findAll({ include: [MenuItem], order: [['createdAt', 'DESC']] });
+    const orders = await Order.findAll({ include: [MenuItem], order: [['createdAt', 'DESC']] });
+    return orders.map(o => this.mapOrder(o));
   }
 
   async getOrdersByUser(userId) {
-    return await Order.findAll({
+    const orders = await Order.findAll({
       where: { userId },
       include: [MenuItem],
       order: [['createdAt', 'DESC']]
     });
+    return orders.map(o => this.mapOrder(o));
+  }
+
+  async getOrderById(orderId) {
+    const order = await Order.findByPk(orderId, { include: [MenuItem] });
+    return order ? this.mapOrder(order) : null;
+  }
+
+  // Helper to map Sequelize structure to Frontend Interface
+  mapOrder(order) {
+    const raw = (typeof order.get === 'function') ? order.get({ plain: true }) : order;
+    return {
+      ...raw,
+      items: (raw.MenuItems || []).map(mi => ({
+        menuItem: {
+          id: mi.id,
+          name: mi.name,
+          price: mi.price,
+          category: mi.category,
+          available: mi.available
+        },
+        quantity: mi.OrderItem ? mi.OrderItem.quantity : 1
+      }))
+    };
+  }
+
+  async updateOrderStatus(orderId, statusData) {
+    const { status, estimatedTime } = statusData;
+    const order = await Order.findByPk(orderId);
+    if (!order) throw new Error('Order not found');
+
+    const updates = { status };
+    if (status === 'preparing') {
+      updates.estimatedTime = estimatedTime || 30; // Default 30 mins
+      updates.startTime = new Date();
+    }
+
+    return await order.update(updates);
   }
 }
 

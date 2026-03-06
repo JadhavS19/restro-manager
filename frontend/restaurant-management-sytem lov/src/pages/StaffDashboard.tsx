@@ -93,6 +93,10 @@ const StaffDashboard = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate('/staff/kitchen')} className="gap-2 border-orange-200 text-orange-600 hover:bg-orange-50">
+            <ChefHat className="h-4 w-4" />
+            <span className="hidden sm:inline">Kitchen</span>
+          </Button>
           <Button variant="outline" size="sm" onClick={() => navigate('/staff/orders')} className="gap-2">
             <Receipt className="h-4 w-4" />
             <span className="hidden sm:inline">My Orders</span>

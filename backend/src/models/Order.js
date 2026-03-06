@@ -42,6 +42,18 @@ const Order = sequelize.define('Order', {
   transactionId: {
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  status: {
+    type: DataTypes.ENUM('pending', 'preparing', 'completed', 'cancelled'),
+    defaultValue: 'pending',
+  },
+  estimatedTime: {
+    type: DataTypes.INTEGER, // Store in minutes
+    allowNull: true,
+  },
+  startTime: {
+    type: DataTypes.DATE,
+    allowNull: true,
   }
 }, {
   timestamps: true,

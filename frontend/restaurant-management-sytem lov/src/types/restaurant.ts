@@ -23,17 +23,20 @@ export interface Order {
   transactionId?: string;
   createdAt: Date;
   staffName: string;
+  status: 'pending' | 'preparing' | 'completed' | 'cancelled';
+  estimatedTime?: number;
+  startTime?: string | Date;
 }
 
 export interface StaffMember {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'staff';
+  role: 'admin' | 'staff' | 'customer';
   active: boolean;
 }
 
-export type UserRole = 'admin' | 'staff';
+export type UserRole = 'admin' | 'staff' | 'customer';
 
 export interface CurrentUser {
   id: string;

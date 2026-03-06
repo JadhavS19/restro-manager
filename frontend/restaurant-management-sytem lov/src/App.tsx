@@ -11,22 +11,29 @@ import MenuManagement from "./pages/MenuManagement";
 import StaffManagement from "./pages/StaffManagement";
 import OrderHistory from "./pages/OrderHistory";
 import StaffOrderHistory from "./pages/StaffOrderHistory";
+import KitchenDashboard from "./pages/KitchenDashboard";
 import NotFound from "./pages/NotFound";
+import {
+  CustomerHome,
+  CustomerMenu,
+  CustomerCheckout,
+  CustomerOrderSuccess,
+  CustomerReceipt,
+  CustomerAuth
+} from "./pages/customer";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children, requiredRole }: { children: React.ReactNode; requiredRole?: 'admin' | 'staff' }) => {
+const ProtectedRoute = ({ children, requiredRole }: { children: React.ReactNode; requiredRole?: 'admin' | 'staff' | 'customer' }) => {
   const { currentUser } = useRestaurant();
-  if (!currentUser) return <Navigate to="/login" replace />;
-  if (requiredRole && currentUser.role !== requiredRole) return <Navigate to="/" replace />;
+  if (!currentUser) return <Navigate to="/auth" replace />;
+  if (requiredRole) {
+    if (requiredRole === 'staff' && (currentUser.role === 'admin' || currentUser.role === 'staff')) {
+      return <>{children}</>;
+    }
+    if (currentUser.role !== requiredRole) return <Navigate to="/" replace />;
+  }
   return <>{children}</>;
-};
-
-const RootRedirect = () => {
-  const { currentUser } = useRestaurant();
-  if (!currentUser) return <Navigate to="/login" replace />;
-  if (currentUser.role === 'admin') return <Navigate to="/admin" replace />;
-  return <Navigate to="/staff" replace />;
 };
 
 const App = () => (
@@ -37,14 +44,24 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Customer Routes */}
+            <Route path="/" element={<CustomerHome />} />
+            <Route path="/menu" element={<CustomerMenu />} />
+            <Route path="/auth" element={<CustomerAuth />} />
+            <Route path="/checkout" element={<ProtectedRoute requiredRole="customer"><CustomerCheckout /></ProtectedRoute>} />
+            <Route path="/order-success/:orderId" element={<CustomerOrderSuccess />} />
+            <Route path="/receipt/:orderId" element={<CustomerReceipt />} />
+
+            {/* Auth & Admin Routes */}
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<RootRedirect />} />
-            <Route path="/staff" element={<ProtectedRoute><StaffDashboard /></ProtectedRoute>} />
-            <Route path="/staff/orders" element={<ProtectedRoute><StaffOrderHistory /></ProtectedRoute>} />
+            <Route path="/staff" element={<ProtectedRoute requiredRole="staff"><StaffDashboard /></ProtectedRoute>} />
+            <Route path="/staff/kitchen" element={<ProtectedRoute requiredRole="staff"><KitchenDashboard /></ProtectedRoute>} />
+            <Route path="/staff/orders" element={<ProtectedRoute requiredRole="staff"><StaffOrderHistory /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/menu" element={<ProtectedRoute requiredRole="admin"><MenuManagement /></ProtectedRoute>} />
             <Route path="/admin/staff" element={<ProtectedRoute requiredRole="admin"><StaffManagement /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute requiredRole="admin"><OrderHistory /></ProtectedRoute>} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

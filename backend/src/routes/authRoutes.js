@@ -5,6 +5,7 @@ const { protect } = require('../middleware/authMiddleware'); // We'll make this 
 const { isAdmin } = require('../middleware/roleCheck');
 
 router.post('/login', authController.login);
+router.post('/register', authController.registerCustomer);
 
 // Only Admins can manage staff
 router.post('/add-staff', protect, isAdmin, authController.addStaff);
