@@ -104,7 +104,7 @@ const CustomerOrderSuccess = () => {
                             className="w-full h-14 text-lg font-bold gap-2 rounded-xl"
                             onClick={() => navigate(`/receipt/${orderId}`)}
                         >
-                            <Printer className="h-5 w-5" /> View Receipt
+                            <CheckSquare className="h-5 w-5" /> View Order Summary
                         </Button>
 
                         <Button

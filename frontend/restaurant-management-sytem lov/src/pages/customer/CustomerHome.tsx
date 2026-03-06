@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Utensils, Clock, MapPin, Phone } from "lucide-react";
 import { useRestaurant } from "@/contexts/RestaurantContext";
+import CustomerNavbar from "@/components/customer/CustomerNavbar";
 
 const CustomerHome = () => {
     const navigate = useNavigate();
@@ -9,6 +10,7 @@ const CustomerHome = () => {
 
     return (
         <div className="min-h-screen bg-background">
+            <CustomerNavbar />
             {/* Hero Section */}
             <section className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
                 <div className="absolute inset-0 z-0">

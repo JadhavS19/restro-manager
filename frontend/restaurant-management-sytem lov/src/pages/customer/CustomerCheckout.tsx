@@ -4,10 +4,10 @@ import { formatCurrency, CGST_RATE, SGST_RATE } from "@/types/restaurant";
 import { ArrowLeft, Trash2, Plus, Minus, CreditCard, Banknote } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import CustomerNavbar from "@/components/customer/CustomerNavbar";
 
 const CustomerCheckout = () => {
     const { cartItems, updateCartQuantity, removeFromCart, placeCustomerOrder, currentUser } = useRestaurant();
@@ -56,7 +56,8 @@ const CustomerCheckout = () => {
     if (cartItems.length === 0) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                <h2 className="text-2xl font-bold mb-4">Your selection is empty</h2>
+                <CustomerNavbar />
+                <h2 className="text-2xl font-bold mb-4 mt-20">Your selection is empty</h2>
                 <Button onClick={() => navigate("/menu")}>Back to Menu</Button>
             </div>
         );
@@ -64,14 +65,7 @@ const CustomerCheckout = () => {
 
     return (
         <div className="min-h-screen bg-muted/30 pb-12">
-            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="container flex h-16 items-center px-4">
-                    <Button variant="ghost" size="icon" onClick={() => navigate("/menu")} className="mr-4">
-                        <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                    <h1 className="text-xl font-bold">Review Your Order</h1>
-                </div>
-            </header>
+            <CustomerNavbar />
 
             <main className="container mx-auto px-4 py-8 max-w-2xl">
                 <div className="space-y-6">

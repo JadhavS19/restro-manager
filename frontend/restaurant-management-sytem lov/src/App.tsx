@@ -19,7 +19,8 @@ import {
   CustomerCheckout,
   CustomerOrderSuccess,
   CustomerReceipt,
-  CustomerAuth
+  CustomerAuth,
+  CustomerOrderHistory
 } from "./pages/customer";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/menu" element={<CustomerMenu />} />
             <Route path="/auth" element={<CustomerAuth />} />
             <Route path="/checkout" element={<ProtectedRoute requiredRole="customer"><CustomerCheckout /></ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute><CustomerOrderHistory /></ProtectedRoute>} />
             <Route path="/order-success/:orderId" element={<CustomerOrderSuccess />} />
             <Route path="/receipt/:orderId" element={<CustomerReceipt />} />
 

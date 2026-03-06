@@ -1,10 +1,11 @@
 import { useRestaurant } from "@/contexts/RestaurantContext";
 import { Button } from "@/components/ui/button";
 import { MenuItem, formatCurrency } from "@/types/restaurant";
-import { Plus, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Plus, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import CustomerNavbar from "@/components/customer/CustomerNavbar";
 
 const CustomerMenu = () => {
     const { menuItems, addToCart, cartItems } = useRestaurant();
@@ -20,16 +21,7 @@ const CustomerMenu = () => {
 
     return (
         <div className="min-h-screen bg-background pb-24">
-            {/* Header */}
-            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="container flex h-16 items-center justify-between">
-                    <Button variant="ghost" onClick={() => navigate("/")} className="gap-2">
-                        <ArrowLeft className="h-4 w-4" /> Back Home
-                    </Button>
-                    <h1 className="text-xl font-bold">Our Menu</h1>
-                    <div className="w-24" /> {/* Spacer */}
-                </div>
-            </header>
+            <CustomerNavbar />
 
             <main className="container mx-auto px-4 py-8">
                 {/* Categories */}

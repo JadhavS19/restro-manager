@@ -103,20 +103,11 @@ const CustomerReceipt = () => {
                 </Card>
 
                 <div className="mt-8 flex gap-4 no-print">
-                    <Button className="flex-1 h-12 gap-2" onClick={() => window.print()}>
-                        <Printer className="h-5 w-5" /> Print Receipt
+                    <Button variant="outline" className="flex-1 h-12 gap-2" onClick={() => navigate("/")}>
+                        Back to Home
                     </Button>
                 </div>
             </div>
-
-            <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white; padding: 0; }
-          .container { max-width: 100%; margin: 0; padding: 0; }
-          .shadow-2xl { box-shadow: none !important; }
-        }
-      `}</style>
         </div>
     );
 };
