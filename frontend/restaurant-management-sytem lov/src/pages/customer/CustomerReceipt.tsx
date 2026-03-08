@@ -4,6 +4,7 @@ import { Order, formatCurrency } from "@/types/restaurant";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Printer, RefreshCw } from "lucide-react";
+import { useRestaurantInfo } from "@/hooks/useRestaurantInfo";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -12,6 +13,7 @@ const CustomerReceipt = () => {
     const navigate = useNavigate();
     const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState(true);
+    const { info } = useRestaurantInfo();
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -56,8 +58,9 @@ const CustomerReceipt = () => {
 
                 <Card className="border-none shadow-2xl bg-white overflow-hidden">
                     <CardHeader className="text-center border-b pb-8 bg-muted/10">
-                        <CardTitle className="text-2xl font-black uppercase tracking-tighter">Savory Spirits</CardTitle>
-                        <p className="text-sm text-muted-foreground">Culinary Excellence District, 123 Street Ave</p>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tighter">{info.name}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{info.address}</p>
+                        {info.phone && <p className="text-sm text-muted-foreground">Tel: {info.phone}</p>}
                         <p className="text-sm text-muted-foreground">Order ID: {order.id}</p>
                     </CardHeader>
 
@@ -106,6 +109,11 @@ const CustomerReceipt = () => {
 
                         <div className="mt-8 p-4 bg-muted/50 rounded-lg text-center space-y-1">
                             <p className="text-sm font-semibold">Paid via {order.paymentMethod.toUpperCase()}</p>
+                            {order.transactionId && (
+                                <p className="text-xs font-mono text-muted-foreground break-all">
+                                    Txn ID: {order.transactionId}
+                                </p>
+                            )}
                             <p className="text-xs text-muted-foreground">Thank you for visiting us! See you soon.</p>
                         </div>
                     </CardContent>

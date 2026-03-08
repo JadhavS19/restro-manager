@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useRestaurant } from '@/contexts/RestaurantContext';
-import { LayoutDashboard, UtensilsCrossed, Users, ClipboardList, LogOut, ChefHat } from 'lucide-react';
+import { LayoutDashboard, UtensilsCrossed, Users, ClipboardList, LogOut, ChefHat, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -11,6 +11,7 @@ const navItems = [
   { to: '/admin/staff', label: 'Manage Team', icon: ChefHat, end: false },
   { to: '/admin/users', label: 'User Directory', icon: Users, end: false },
   { to: '/admin/orders', label: 'Orders', icon: ClipboardList, end: false },
+  { to: '/admin/settings', label: 'Settings', icon: Settings, end: false },
 ];
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {

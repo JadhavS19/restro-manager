@@ -11,6 +11,7 @@ import MenuManagement from "./pages/MenuManagement";
 import StaffManagement from "./pages/StaffManagement";
 import UserManagement from "./pages/UserManagement";
 import OrderHistory from "./pages/OrderHistory";
+import RestaurantSettings from "./pages/RestaurantSettings";
 import StaffOrderHistory from "./pages/StaffOrderHistory";
 import KitchenDashboard from "./pages/KitchenDashboard";
 import NotFound from "./pages/NotFound";
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="/admin/staff" element={<ProtectedRoute requiredRole="admin"><StaffManagement /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><UserManagement /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute requiredRole="admin"><OrderHistory /></ProtectedRoute>} />
+            <Route path="/admin/settings" element={<ProtectedRoute requiredRole="admin"><RestaurantSettings /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

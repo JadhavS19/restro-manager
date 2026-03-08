@@ -121,6 +121,7 @@ import { Order, formatCurrency } from '@/types/restaurant';
 import { Button } from '@/components/ui/button';
 import { Printer, Plus } from 'lucide-react';
 import { format, isValid } from 'date-fns';
+import { useRestaurantInfo } from '@/hooks/useRestaurantInfo';
 
 interface BillReceiptProps {
   order: any; // Using any temporarily to handle the transition from Mock to DB types
@@ -128,9 +129,8 @@ interface BillReceiptProps {
 }
 
 const BillReceipt = ({ order, onNewOrder }: BillReceiptProps) => {
-  const handlePrint = () => {
-    window.print();
-  };
+  const handlePrint = () => { window.print(); };
+  const { info } = useRestaurantInfo();
 
   // --- DATA NORMALIZATION ---
   // 1. Handle Date: Convert string from DB to Date object
@@ -160,10 +160,10 @@ const BillReceipt = ({ order, onNewOrder }: BillReceiptProps) => {
 
       <div className="receipt-print w-full max-w-sm bg-card border rounded-xl p-6 shadow-lg font-mono text-sm">
         <div className="text-center mb-4">
-          <h2 className="text-xl font-bold font-serif text-card-foreground">RestroManager</h2>
-          <p className="text-xs text-muted-foreground mt-1">Tanisha Restaurant</p>
-          <p className="text-xs text-muted-foreground">YCWM college road, Warananagar</p>
-          <p className="text-xs text-muted-foreground">GSTIN: 2***********1Z5</p>
+          <h2 className="text-xl font-bold font-serif text-card-foreground">{info.name}</h2>
+          <p className="text-xs text-muted-foreground mt-1">{info.address}</p>
+          {info.phone && <p className="text-xs text-muted-foreground">Tel: {info.phone}</p>}
+          {info.gstin && <p className="text-xs text-muted-foreground">GSTIN: {info.gstin}</p>}
         </div>
 
         <div className="border-t border-dashed border-border my-3" />
@@ -228,8 +228,8 @@ const BillReceipt = ({ order, onNewOrder }: BillReceiptProps) => {
 
         <div className="text-center space-y-2">
           <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${order?.paymentMethod === 'cash'
-              ? 'bg-success/10 text-success'
-              : 'bg-primary/10 text-primary'
+            ? 'bg-success/10 text-success'
+            : 'bg-primary/10 text-primary'
             }`}>
             Paid via {order?.paymentMethod === 'cash' ? 'CASH' : 'ONLINE'}
           </div>
