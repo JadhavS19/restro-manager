@@ -12,16 +12,34 @@ import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Receipt } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { History, Search } from 'lucide-react';
+import { History, Search, Lock, KeyRound } from 'lucide-react';
 import BillReceipt from '@/components/restaurant/BillReceipt';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const KitchenDashboard = () => {
     const { orders, fetchOrders, updateOrderStatus, currentUser } = useRestaurant();
     const [prepTimes, setPrepTimes] = useState<Record<string, string>>({});
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedOrderForBill, setSelectedOrderForBill] = useState<Order | null>(null);
+    const [isAuthorized, setIsAuthorized] = useState(false);
+    const [pin, setPin] = useState('');
+    const [pinError, setPinError] = useState(false);
     const navigate = useNavigate();
+
+    const KITCHEN_PIN = "1906";
+
+    const handlePinSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (pin === KITCHEN_PIN) {
+            setIsAuthorized(true);
+            setPinError(false);
+            toast.success("Access Granted to Kitchen");
+        } else {
+            setPinError(true);
+            setPin('');
+            toast.error("Invalid Kitchen PIN");
+        }
+    };
 
     useEffect(() => {
         fetchOrders();
@@ -53,6 +71,49 @@ const KitchenDashboard = () => {
             toast.error(`Order ${orderId} cancelled.`);
         }
     };
+
+    if (!isAuthorized) {
+        return (
+            <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
+                <Card className="w-full max-w-md border-none shadow-2xl bg-[#1e293b] text-white overflow-hidden">
+                    <CardHeader className="text-center pb-2">
+                        <div className="mx-auto w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-4">
+                            <Lock className="h-8 w-8 text-primary" />
+                        </div>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Kitchen Access</CardTitle>
+                        <p className="text-slate-400 text-sm">Enter the security PIN to proceed</p>
+                    </CardHeader>
+                    <CardContent className="p-8 pt-6">
+                        <form onSubmit={handlePinSubmit} className="space-y-6">
+                            <div className="space-y-4">
+                                <div className="relative">
+                                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                                    <Input
+                                        type="password"
+                                        placeholder="••••"
+                                        maxLength={4}
+                                        value={pin}
+                                        onChange={(e) => setPin(e.target.value)}
+                                        className={`pl-10 h-14 bg-[#334155] border-none text-center text-2xl tracking-[1em] font-mono text-white focus-visible:ring-primary ${pinError ? 'ring-2 ring-destructive' : ''}`}
+                                        autoFocus
+                                    />
+                                </div>
+                                {pinError && (
+                                    <p className="text-destructive text-center text-xs font-bold uppercase animate-bounce">Incorrect PIN. Try Again.</p>
+                                )}
+                            </div>
+                            <Button type="submit" className="w-full h-14 text-lg font-bold uppercase tracking-widest shadow-lg shadow-primary/20">
+                                Verify Access
+                            </Button>
+                            <Button variant="ghost" type="button" onClick={() => navigate('/staff')} className="w-full text-slate-400 font-bold">
+                                Back to Dashboard
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-muted/30 p-4 lg:p-8">
