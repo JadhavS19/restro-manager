@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 
 const AdminDashboard = () => {
-  const { orders, staffMembers, menuItems } = useRestaurant();
+  const { orders, users, menuItems } = useRestaurant();
 
   // Normalize data: ensure dates are Date objects and numbers are Numbers
   const normalizedOrders = (orders || []).map(o => ({
@@ -22,7 +22,9 @@ const AdminDashboard = () => {
   const todayOrders = normalizedOrders.filter(o => isToday(o.createdAt));
   const todayRevenue = todayOrders.reduce((sum, o) => sum + o.total, 0);
   const totalSales = normalizedOrders.reduce((sum, o) => sum + o.total, 0);
-  const activeStaff = (staffMembers || []).filter(s => s.active).length;
+  const staffOnly = (users || []).filter(u => u.role === 'admin' || u.role === 'staff');
+  const activeStaff = staffOnly.filter(s => s.active).length;
+  const totalCustomers = (users || []).filter(u => u.role === 'customer').length;
   const recentOrders = normalizedOrders.slice(0, 10);
 
   return (
@@ -33,8 +35,9 @@ const AdminDashboard = () => {
           <p className="text-muted-foreground mt-1">Overview of your restaurant</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatsCard title="Active Staff" value={activeStaff} icon={Users} description={`${staffMembers.length} total`} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <StatsCard title="Active Staff" value={activeStaff} icon={Users} description={`${staffOnly.length} staff total`} />
+          <StatsCard title="Total Customers" value={totalCustomers} icon={Users} description="Registered guests" />
           <StatsCard title="Today's Orders" value={todayOrders.length} icon={ShoppingBag} />
           <StatsCard title="Today's Revenue" value={formatCurrency(todayRevenue)} icon={TrendingUp} description="Daily profit" />
           <StatsCard title="Total Sales" value={formatCurrency(totalSales)} icon={UtensilsCrossed} description={`${menuItems.length} menu items`} />

@@ -8,7 +8,7 @@ interface RestaurantContextType {
   menuItems: MenuItem[];
   orders: Order[];
   myOrders: Order[];
-  staffMembers: StaffMember[];
+  users: StaffMember[];
   cartItems: OrderItem[];
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
@@ -31,6 +31,7 @@ interface RestaurantContextType {
   updateOrderStatus: (orderId: string, status: string, estimatedTime?: number) => Promise<void>;
   fetchMyOrders: () => Promise<void>;
   fetchOrders: () => Promise<void>;
+  fetchUsers: () => Promise<void>;
 }
 
 const RestaurantContext = createContext<RestaurantContextType | null>(null);
@@ -38,7 +39,7 @@ const RestaurantContext = createContext<RestaurantContextType | null>(null);
 export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+  const [users, setUsers] = useState<StaffMember[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [myOrders, setMyOrders] = useState<Order[]>([]);
   const [cartItems, setCartItems] = useState<OrderItem[]>([]);
@@ -119,12 +120,12 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
     setCurrentUser(null);
   }, []);
 
-  const fetchStaff = async () => {
+  const fetchUsers = async () => {
     try {
       const res = await fetch(`${API_URL}/auth/staff`, { headers: getHeaders() });
       if (!res.ok) return;
       const data = await res.json();
-      if (data.success) setStaffMembers(data.data);
+      if (data.success) setUsers(data.data);
     } catch (err) { console.error(err); }
   };
 
@@ -135,7 +136,7 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
       body: JSON.stringify(staff),
     });
     const data = await res.json();
-    if (data.success) setStaffMembers(prev => [...prev, data.data]);
+    if (data.success) setUsers(prev => [...prev, data.data]);
   };
 
   const updateStaffMember = async (id: string, updates: Partial<StaffMember>) => {
@@ -145,12 +146,12 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
       body: JSON.stringify(updates),
     });
     const data = await res.json();
-    if (data.success) setStaffMembers(prev => prev.map(s => s.id === id ? data.data : s));
+    if (data.success) setUsers(prev => prev.map(s => s.id === id ? data.data : s));
   };
 
   const deleteStaffMember = async (id: string) => {
     const res = await fetch(`${API_URL}/auth/staff/${id}`, { method: 'DELETE', headers: getHeaders() });
-    if (res.ok) setStaffMembers(prev => prev.filter(s => s.id !== id));
+    if (res.ok) setUsers(prev => prev.filter(s => s.id !== id));
   };
 
   // --- MENU LOGIC ---
@@ -223,7 +224,7 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     fetchMenu();
     if (currentUser) {
-      if (currentUser.role === 'admin') fetchStaff();
+      if (currentUser.role === 'admin') fetchUsers();
       fetchOrders();
       fetchMyOrders();
     }
@@ -304,7 +305,7 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <RestaurantContext.Provider value={{
-      currentUser, staffMembers, menuItems, orders, myOrders, cartItems,
+      currentUser, users, menuItems, orders, myOrders, cartItems,
       login, register, logout,
       addToCart, removeFromCart, updateCartQuantity, clearCart,
       addStaffMember, updateStaffMember, deleteStaffMember,
@@ -316,6 +317,7 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
       updateOrderStatus,
       fetchMyOrders,
       fetchOrders,
+      fetchUsers,
     }}>
       {children}
     </RestaurantContext.Provider>

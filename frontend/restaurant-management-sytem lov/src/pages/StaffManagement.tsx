@@ -13,7 +13,7 @@ import { Plus, Edit, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const StaffManagement = () => {
-  const { staffMembers, addStaffMember, updateStaffMember, deleteStaffMember } = useRestaurant();
+  const { users, addStaffMember, updateStaffMember, deleteStaffMember } = useRestaurant();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -21,6 +21,8 @@ const StaffManagement = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'admin' | 'staff'>('staff');
   const [active, setActive] = useState(true);
+
+  const staffOnly = users.filter(u => u.role === 'admin' || u.role === 'staff');
 
   const resetForm = () => {
     setName('');
@@ -36,56 +38,52 @@ const StaffManagement = () => {
   };
 
   const openEdit = (id: string) => {
-    const staff = staffMembers.find(s => s.id === id);
+    const staff = staffOnly.find(s => s.id === id);
     if (!staff) return;
     setEditingId(id);
     setName(staff.name);
     setEmail(staff.email);
-    setRole(staff.role);
+    setRole(staff.role as 'admin' | 'staff');
     setActive(staff.active);
     setDialogOpen(true);
   };
 
-const handleSave = async () => {
-  if (!name || !email) {
-    toast({ title: 'Error', description: 'Please fill all fields.', variant: 'destructive' });
-    return;
-  }
-  
-  try {
-    if (editingId) {
-      // Use await here
-      await updateStaffMember(editingId, { name, email, role, active });
-      toast({ title: 'Updated', description: `${name} has been updated.` });
-    } else {
-      // Use await here
-      await addStaffMember({ name, email, role, active });
-      toast({ title: 'Added', description: `${name} has been added.` });
+  const handleSave = async () => {
+    if (!name || !email) {
+      toast({ title: 'Error', description: 'Please fill all fields.', variant: 'destructive' });
+      return;
     }
-    setDialogOpen(false);
-    resetForm();
-  } catch (error) {
-    toast({ 
-      title: 'Error', 
-      description: 'Action failed. Please check your connection.', 
-      variant: 'destructive' 
-    });
-  }
-};
-const handleDelete = async (id: string) => {
-  const staff = staffMembers.find(s => s.id === id);
-  if (confirm(`Are you sure you want to remove ${staff?.name}?`)) {
-    await deleteStaffMember(id);
-    toast({ title: 'Deleted', description: `${staff?.name} has been removed.` });
-  }
-};
+
+    try {
+      if (editingId) {
+        await updateStaffMember(editingId, { name, email, role, active });
+        toast({ title: 'Updated', description: `${name} has been updated.` });
+      } else {
+        await addStaffMember({ name, email, role, active });
+        toast({ title: 'Added', description: `${name} has been added.` });
+      }
+      setDialogOpen(false);
+      resetForm();
+    } catch (error) {
+      toast({ title: 'Error', description: 'Action failed.', variant: 'destructive' });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    const staff = staffOnly.find(s => s.id === id);
+    if (confirm(`Are you sure you want to remove ${staff?.name}?`)) {
+      await deleteStaffMember(id);
+      toast({ title: 'Deleted', description: `${staff?.name} has been removed.` });
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Staff Management</h1>
-            <p className="text-muted-foreground mt-1">{staffMembers.length} team members</p>
+            <p className="text-muted-foreground mt-1">{staffOnly.length} team members</p>
           </div>
           <Button onClick={openAdd} className="gap-2">
             <Plus className="h-4 w-4" />
@@ -93,7 +91,7 @@ const handleDelete = async (id: string) => {
           </Button>
         </div>
 
-        <div className="bg-card rounded-xl border overflow-hidden">
+        <div className="bg-card rounded-xl border overflow-hidden shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
@@ -105,8 +103,8 @@ const handleDelete = async (id: string) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {staffMembers.map(staff => (
-                <TableRow key={staff.id}>
+              {staffOnly.map(staff => (
+                <TableRow key={staff.id} className="hover:bg-muted/30 transition-colors">
                   <TableCell className="font-medium">{staff.name}</TableCell>
                   <TableCell className="text-muted-foreground">{staff.email}</TableCell>
                   <TableCell>
@@ -115,7 +113,7 @@ const handleDelete = async (id: string) => {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={staff.active ? 'default' : 'secondary'}>
+                    <Badge variant={staff.active ? 'default' : 'secondary'} className={staff.active ? 'bg-green-100 text-green-700 hover:bg-green-100' : ''}>
                       {staff.active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
@@ -124,7 +122,7 @@ const handleDelete = async (id: string) => {
                       <Button variant="ghost" size="icon" onClick={() => openEdit(staff.id)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDelete(staff.id)}>
+                      <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(staff.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
