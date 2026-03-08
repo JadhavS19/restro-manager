@@ -45,22 +45,26 @@ const CustomerAuth = () => {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
-            <Card className="w-full max-w-md shadow-2xl border-none overflow-hidden">
+        <div className="relative flex min-h-screen items-center justify-center p-4">
+            {/* Background Image & Overlay */}
+            <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center" />
+            <div className="absolute inset-0 z-0 bg-black/60 backdrop-blur-[2px]" />
+
+            <Card className="w-full max-w-md shadow-2xl border border-white/20 bg-background/20 backdrop-blur-xl overflow-hidden z-10 text-white">
                 <div className="bg-primary h-2" />
                 <CardHeader className="space-y-1">
-                    <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="w-fit mb-4 gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="w-fit mb-4 gap-2 text-white hover:bg-white/20 hover:text-white">
                         <ArrowLeft className="h-4 w-4" /> Back to Home
                     </Button>
                     <div className="flex justify-center mb-4">
-                        <div className="p-3 bg-primary/10 rounded-full">
+                        <div className="p-3 bg-primary/20 backdrop-blur-md rounded-full shadow-lg">
                             {isLogin ? <LogIn className="h-8 w-8 text-primary" /> : <UserPlus className="h-8 w-8 text-primary" />}
                         </div>
                     </div>
-                    <CardTitle className="text-2xl text-center">
+                    <CardTitle className="text-2xl text-center text-white">
                         {isLogin ? 'Welcome Back' : 'Join Us Today'}
                     </CardTitle>
-                    <CardDescription className="text-center">
+                    <CardDescription className="text-center text-gray-200">
                         {isLogin ? 'Sign in to place your gourmet order' : 'Create an account for a seamless dining experience'}
                     </CardDescription>
                 </CardHeader>
@@ -68,18 +72,19 @@ const CustomerAuth = () => {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {!isLogin && (
                             <div className="space-y-2">
-                                <Label htmlFor="name">Full Name</Label>
+                                <Label htmlFor="name" className="text-gray-200">Full Name</Label>
                                 <Input
                                     id="name"
                                     placeholder="John Doe"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
+                                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus-visible:ring-primary shadow-inner"
                                 />
                             </div>
                         )}
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email Address</Label>
+                            <Label htmlFor="email" className="text-gray-200">Email Address</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -87,10 +92,11 @@ const CustomerAuth = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
+                                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus-visible:ring-primary shadow-inner"
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password" className="text-gray-200">Password</Label>
                             <Input
                                 id="password"
                                 type="password"
@@ -98,6 +104,7 @@ const CustomerAuth = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus-visible:ring-primary shadow-inner"
                             />
                         </div>
                         <Button type="submit" className="w-full h-12 text-lg font-bold mt-4" disabled={loading}>
@@ -110,15 +117,17 @@ const CustomerAuth = () => {
                 <CardFooter className="flex flex-col space-y-4 pb-8">
                     <div className="relative w-full">
                         <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t" />
+                            <span className="w-full border-t border-white/20" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-background px-2 text-muted-foreground">Or</span>
+                            <span className="px-2 text-gray-300 flex items-center justify-center">
+                                <span className="bg-black/50 backdrop-blur-md px-3 py-0.5 rounded-full">Or</span>
+                            </span>
                         </div>
                     </div>
                     <Button
                         variant="outline"
-                        className="w-full h-11"
+                        className="w-full h-11 bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white"
                         onClick={() => setIsLogin(!isLogin)}
                     >
                         {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
