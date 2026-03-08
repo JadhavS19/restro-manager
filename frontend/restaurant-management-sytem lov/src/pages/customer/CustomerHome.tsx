@@ -24,7 +24,7 @@ const CustomerHome = () => {
 
                 <div className="relative z-10 max-w-3xl animate-in zoom-in duration-1000">
                     <h1 className="text-6xl md:text-8xl font-bold tracking-tight mb-6 text-white leading-tight">
-                        Savory <span className="text-primary italic">Spirits</span>
+                        Tanisha <span className="text-primary italic">Restaurant</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
                         Where every dish tells a story of tradition, taste, and timeless culinary artistry.

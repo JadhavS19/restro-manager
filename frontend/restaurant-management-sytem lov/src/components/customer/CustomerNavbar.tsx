@@ -36,7 +36,7 @@ const CustomerNavbar = () => {
                         <Utensils className="h-5 w-5" />
                     </div>
                     <div>
-                        <span className="text-xl font-bold font-serif leading-none block">Savory Spirits</span>
+                        <span className="text-xl font-bold font-serif leading-none block">Tanisha Restaurant</span>
                         <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Restaurant</span>
                     </div>
                 </Link>
