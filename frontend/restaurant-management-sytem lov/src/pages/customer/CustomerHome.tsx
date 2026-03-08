@@ -41,8 +41,7 @@ const CustomerHome = () => {
                                 </Button>
                                 <Button
                                     size="lg"
-                                    variant="outline"
-                                    className="h-16 px-10 text-xl font-bold rounded-full border-white text-white hover:bg-white/10 backdrop-blur-md"
+                                    className="h-16 px-10 text-xl font-bold rounded-full shadow-2xl transition-transform hover:scale-105"
                                     onClick={() => navigate("/staff/login")}
                                 >
                                     Login as Staff
