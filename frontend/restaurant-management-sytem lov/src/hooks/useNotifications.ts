@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { toast } from 'sonner';
 
 export interface OrderNotification {
     id: string;
@@ -10,7 +11,7 @@ export interface OrderNotification {
 }
 
 const STORAGE_KEY = 'order_notifications';
-const POLL_INTERVAL = 15000; // poll every 15 seconds
+const POLL_INTERVAL = 3000; // poll every 3 seconds for fast feedback
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const getStoredNotifications = (): OrderNotification[] => {
@@ -29,6 +30,7 @@ export const useNotifications = (isLoggedIn: boolean) => {
     const [notifications, setNotifications] = useState<OrderNotification[]>(getStoredNotifications);
     const prevOrderStatusesRef = useRef<Record<string, string>>({});
     const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const isFirstPollRef = useRef(true);
 
     const requestBrowserPermission = async () => {
         if ('Notification' in window && Notification.permission === 'default') {
@@ -60,6 +62,7 @@ export const useNotifications = (isLoggedIn: boolean) => {
             return updated;
         });
 
+        toast.success(notification.message);
         sendBrowserNotification('🍽️ Order Update', notification.message);
     }, []);
 
@@ -102,8 +105,16 @@ export const useNotifications = (isLoggedIn: boolean) => {
             orders.forEach(order => {
                 const prevStatus = prevOrderStatusesRef.current[order.id];
 
-                // Only notify if status changed
-                if (prevStatus && prevStatus !== order.status) {
+                // 1. Completely new order discovered AFTER initial load
+                if (!isFirstPollRef.current && !prevStatus) {
+                    addNotification({
+                        orderId: order.id,
+                        message: `🧾 Your order #${order.id.slice(-6).toUpperCase()} has been placed successfully!`,
+                        status: order.status
+                    });
+                }
+                // 2. Existing order's status changed
+                else if (prevStatus && prevStatus !== order.status) {
                     let message = '';
                     if (order.status === 'completed') {
                         message = `🎉 Your order #${order.id.slice(-6).toUpperCase()} (Table ${order.tableNumber}) is ready! Please collect it.`;
@@ -121,8 +132,10 @@ export const useNotifications = (isLoggedIn: boolean) => {
                 // Store current status for next poll
                 prevOrderStatusesRef.current[order.id] = order.status;
             });
+
+            isFirstPollRef.current = false;
         } catch (err) {
-            // Silently fail — polling errors shouldn't break the UI
+            console.error('Polling error:', err);
         }
     }, [addNotification]);
 
