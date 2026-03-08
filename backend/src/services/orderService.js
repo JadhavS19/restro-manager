@@ -38,7 +38,7 @@ class OrderService {
         total,
         paymentMethod,
         transactionId,
-        staffName: user ? user.name : 'Customer',
+        staffName: orderData.customerName || (user ? user.name : 'Customer'),
         userId: user ? user.id : null
       }, { transaction: t });
 

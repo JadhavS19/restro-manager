@@ -15,6 +15,7 @@ const StaffDashboard = () => {
   const navigate = useNavigate();
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [tableNumber, setTableNumber] = useState(1);
+  const [customerName, setCustomerName] = useState('');
   const [showPayment, setShowPayment] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
@@ -47,7 +48,9 @@ const StaffDashboard = () => {
   const handlePaymentSelect = async (method: 'cash' | 'online', transactionId?: string) => {
     try {
       // 1. Trigger the async call to our Node.js backend
-      const order = await addOrder(tableNumber, orderItems, method, transactionId);
+      // Passing customerName as staffName for now if backend uses staffName field 
+      // or we can just send it as an extra field if the backend is flexible.
+      const order = await addOrder(tableNumber, orderItems, method, transactionId, customerName);
 
       if (order) {
         // 2. Only if the backend confirms the save, we show the receipt
@@ -65,6 +68,7 @@ const StaffDashboard = () => {
     setOrderItems([]);
     setCompletedOrder(null);
     setTableNumber(1);
+    setCustomerName('');
   };
 
   const handleLogout = () => {
@@ -122,6 +126,8 @@ const StaffDashboard = () => {
             onRemoveItem={handleRemoveItem}
             onGenerateBill={() => setShowPayment(true)}
             onNewOrder={handleNewOrder}
+            customerName={customerName}
+            onCustomerNameChange={setCustomerName}
           />
         </div>
       </div>

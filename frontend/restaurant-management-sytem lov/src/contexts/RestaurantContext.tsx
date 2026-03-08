@@ -26,7 +26,7 @@ interface RestaurantContextType {
   addStaffMember: (staff: Omit<StaffMember, 'id'>) => Promise<void>;
   updateStaffMember: (id: string, updates: Partial<StaffMember>) => Promise<void>;
   deleteStaffMember: (id: string) => Promise<void>;
-  addOrder: (tableNumber: number, items: OrderItem[], paymentMethod: 'cash' | 'online', transactionId?: string) => Promise<Order | null>;
+  addOrder: (tableNumber: number, items: OrderItem[], paymentMethod: 'cash' | 'online', transactionId?: string, customerName?: string) => Promise<Order | null>;
   placeCustomerOrder: (tableNumber: number, paymentMethod: 'cash' | 'online', transactionId?: string) => Promise<Order | null>;
   updateOrderStatus: (orderId: string, status: string, estimatedTime?: number) => Promise<void>;
   fetchMyOrders: () => Promise<void>;
@@ -235,13 +235,15 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
     tableNumber: number,
     items: OrderItem[],
     paymentMethod: 'cash' | 'online',
-    transactionId?: string
+    transactionId?: string,
+    customerName?: string
   ): Promise<Order | null> => {
     try {
       const orderPayload = {
         tableNumber,
         paymentMethod,
         transactionId,
+        customerName,
         items: items.map(item => ({
           menuItemId: item.menuItem.id,
           quantity: item.quantity

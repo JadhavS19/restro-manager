@@ -2,6 +2,7 @@ import { OrderItem, formatCurrency, CGST_RATE, SGST_RATE } from '@/types/restaur
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Minus, Trash2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 interface OrderPanelProps {
   items: OrderItem[];
@@ -11,9 +12,21 @@ interface OrderPanelProps {
   onRemoveItem: (itemId: string) => void;
   onGenerateBill: () => void;
   onNewOrder: () => void;
+  customerName: string;
+  onCustomerNameChange: (name: string) => void;
 }
 
-const OrderPanel = ({ items, tableNumber, onTableChange, onQuantityChange, onRemoveItem, onGenerateBill, onNewOrder }: OrderPanelProps) => {
+const OrderPanel = ({
+  items,
+  tableNumber,
+  onTableChange,
+  onQuantityChange,
+  onRemoveItem,
+  onGenerateBill,
+  onNewOrder,
+  customerName,
+  onCustomerNameChange
+}: OrderPanelProps) => {
   const subtotal = items.reduce((sum, item) => sum + item.menuItem.price * item.quantity, 0);
   const cgst = subtotal * CGST_RATE;
   const sgst = subtotal * SGST_RATE;
@@ -28,18 +41,28 @@ const OrderPanel = ({ items, tableNumber, onTableChange, onQuantityChange, onRem
         </Button>
       </div>
 
-      <div className="mb-4">
-        <label className="text-sm font-medium text-muted-foreground mb-1 block">Table Number</label>
-        <Select value={String(tableNumber)} onValueChange={(v) => onTableChange(Number(v))}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: 20 }, (_, i) => i + 1).map(n => (
-              <SelectItem key={n} value={String(n)}>Table {n}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="space-y-4 mb-4">
+        <div>
+          <label className="text-sm font-medium text-muted-foreground mb-1 block">Customer Name</label>
+          <Input
+            placeholder="Enter customer name..."
+            value={customerName}
+            onChange={(e) => onCustomerNameChange(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-muted-foreground mb-1 block">Table Number</label>
+          <Select value={String(tableNumber)} onValueChange={(v) => onTableChange(Number(v))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 20 }, (_, i) => i + 1).map(n => (
+                <SelectItem key={n} value={String(n)}>Table {n}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="flex-1 overflow-auto space-y-2 min-h-0">
@@ -108,7 +131,7 @@ const OrderPanel = ({ items, tableNumber, onTableChange, onQuantityChange, onRem
       <Button
         className="mt-4 h-12 text-base"
         onClick={onGenerateBill}
-        // disabled={items.length === 0}
+      // disabled={items.length === 0}
       >
         Generate Bill
       </Button>

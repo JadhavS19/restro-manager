@@ -1,16 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRestaurant } from '@/contexts/RestaurantContext';
-import { formatCurrency } from '@/types/restaurant';
+import { formatCurrency, Order } from '@/types/restaurant';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ChefHat, Receipt } from 'lucide-react';
 import { format } from 'date-fns';
+import BillReceipt from '@/components/restaurant/BillReceipt';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const StaffOrderHistory = () => {
     const { currentUser, myOrders, fetchMyOrders } = useRestaurant();
     const navigate = useNavigate();
+    const [selectedOrderForBill, setSelectedOrderForBill] = useState<Order | null>(null);
 
     useEffect(() => {
         fetchMyOrders();
@@ -78,6 +81,7 @@ const StaffOrderHistory = () => {
                                         <TableHead>Total</TableHead>
                                         <TableHead>Payment</TableHead>
                                         <TableHead>Date/Time</TableHead>
+                                        <TableHead className="text-right">Bill</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -108,6 +112,16 @@ const StaffOrderHistory = () => {
                                             <TableCell className="text-muted-foreground whitespace-nowrap">
                                                 {format(new Date(order.createdAt), 'dd/MM HH:mm')}
                                             </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="h-8 gap-2 rounded-lg font-bold border-primary/20 text-primary hover:bg-primary/5"
+                                                    onClick={() => setSelectedOrderForBill(order as any)}
+                                                >
+                                                    <Receipt className="h-3.5 w-3.5" /> View Bill
+                                                </Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -116,6 +130,18 @@ const StaffOrderHistory = () => {
                     )}
                 </div>
             </div>
+
+            {/* Bill Modal */}
+            <Dialog open={!!selectedOrderForBill} onOpenChange={() => setSelectedOrderForBill(null)}>
+                <DialogContent className="max-w-md p-0 overflow-hidden bg-transparent border-none">
+                    {selectedOrderForBill && (
+                        <BillReceipt
+                            order={selectedOrderForBill}
+                            onNewOrder={() => setSelectedOrderForBill(null)}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
