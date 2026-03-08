@@ -69,7 +69,7 @@ const StaffDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/staff/login');
   };
 
   const subtotal = orderItems.reduce((sum, item) => sum + item.menuItem.price * item.quantity, 0);

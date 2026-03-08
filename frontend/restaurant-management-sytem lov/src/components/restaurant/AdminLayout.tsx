@@ -19,7 +19,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/staff/login');
   };
 
   return (
