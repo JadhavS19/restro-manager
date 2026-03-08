@@ -21,12 +21,19 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Call the async login from context
-    const success = await login(email, password);
+    const role = await login(email, password);
 
-    if (success) {
-      toast({ title: 'Success', description: 'Welcome back!' });
-      navigate('/');
+    if (role) {
+      toast({ title: 'Welcome back!', description: 'Redirecting to your dashboard...' });
+      // Navigate based on role
+      if (role === 'admin') {
+        navigate('/admin');
+      } else if (role === 'staff') {
+        navigate('/staff');
+      } else {
+        // Customer accidentally on staff login — send to customer home
+        navigate('/');
+      }
     } else {
       toast({
         title: 'Login Failed',

@@ -10,7 +10,7 @@ interface RestaurantContextType {
   myOrders: Order[];
   users: StaffMember[];
   cartItems: OrderItem[];
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<string | null>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
   // Cart Actions
@@ -77,7 +77,7 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
 
   // --- AUTH & STAFF LOGIC ---
 
-  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string): Promise<string | null> => {
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -88,11 +88,11 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
       if (data.success) {
         localStorage.setItem('token', data.token);
         setCurrentUser(data.user);
-        return true;
+        return data.user.role; // e.g. 'admin', 'staff', 'customer'
       }
-      return false;
+      return null;
     } catch (error) {
-      return false;
+      return null;
     }
   }, []);
 

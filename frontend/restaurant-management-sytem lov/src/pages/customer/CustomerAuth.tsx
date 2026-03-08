@@ -25,7 +25,8 @@ const CustomerAuth = () => {
         try {
             let success = false;
             if (isLogin) {
-                success = await login(email, password);
+                const role = await login(email, password);
+                success = role !== null; // login returns role string or null
             } else {
                 success = await register(name, email, password);
             }
