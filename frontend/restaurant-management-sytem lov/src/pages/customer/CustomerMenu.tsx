@@ -45,6 +45,11 @@ const CustomerMenu = () => {
                             key={item.id}
                             className="group relative flex flex-col p-4 rounded-2xl border bg-card hover:shadow-xl transition-all duration-300"
                         >
+                            {item.image && (
+                                <div className="w-full h-48 mb-4 rounded-xl overflow-hidden bg-muted/30">
+                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                </div>
+                            )}
                             <div className="flex-1">
                                 <div className="flex justify-between items-start mb-2">
                                     <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{item.name}</h3>

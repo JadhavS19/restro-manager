@@ -27,6 +27,10 @@ const MenuItem = sequelize.define('MenuItem', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  image: {
+    type: DataTypes.TEXT('long'), // long text for base64 or url
+    allowNull: true,
+  },
 }, {
   timestamps: true, // Automatically adds createdAt and updatedAt
 });

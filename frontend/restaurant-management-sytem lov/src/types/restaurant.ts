@@ -4,6 +4,7 @@ export interface MenuItem {
   price: number;
   category: string;
   available: boolean;
+  image?: string;
 }
 
 export interface OrderItem {

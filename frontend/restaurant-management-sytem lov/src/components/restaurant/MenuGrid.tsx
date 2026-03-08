@@ -25,9 +25,14 @@ const MenuGrid = ({ onAddItem }: MenuGridProps) => {
                 <button
                   key={item.id}
                   onClick={() => onAddItem(item)}
-                  className="group flex flex-col items-start p-4 rounded-xl bg-card border border-border hover:border-primary hover:shadow-md transition-all text-left"
+                  className="group flex flex-col items-start p-3 rounded-xl bg-card border border-border hover:border-primary hover:shadow-md transition-all text-left"
                 >
-                  <span className="font-medium text-sm text-card-foreground group-hover:text-primary transition-colors">
+                  {item.image && (
+                    <div className="w-full aspect-video mb-3 rounded-md overflow-hidden bg-muted/30">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  )}
+                  <span className="font-medium text-sm text-card-foreground group-hover:text-primary transition-colors line-clamp-1">
                     {item.name}
                   </span>
                   <span className="text-primary font-bold mt-1">{formatCurrency(item.price)}</span>

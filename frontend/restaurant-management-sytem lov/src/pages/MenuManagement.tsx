@@ -9,8 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, UploadCloud, Link as LinkIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const categories = ['Starters', 'Main Course', 'Beverages', 'Desserts'];
@@ -24,12 +25,16 @@ const MenuManagement = () => {
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState(categories[0]);
   const [available, setAvailable] = useState(true);
+  const [image, setImage] = useState('');
+  const [imageSourceType, setImageSourceType] = useState('url');
 
   const resetForm = () => {
     setName('');
     setPrice('');
     setCategory(categories[0]);
     setAvailable(true);
+    setImage('');
+    setImageSourceType('url');
     setEditingId(null);
   };
 
@@ -46,6 +51,12 @@ const MenuManagement = () => {
     setPrice(String(item.price));
     setCategory(item.category);
     setAvailable(item.available);
+    setImage(item.image || '');
+    if (item.image?.startsWith('data:image')) {
+      setImageSourceType('upload');
+    } else {
+      setImageSourceType('url');
+    }
     setDialogOpen(true);
   };
 
@@ -55,14 +66,36 @@ const MenuManagement = () => {
       return;
     }
     if (editingId) {
-      updateMenuItem(editingId, { name, price: Number(price), category, available });
+      updateMenuItem(editingId, { name, price: Number(price), category, available, image });
       toast({ title: 'Updated', description: `${name} has been updated.` });
     } else {
-      addMenuItem({ name, price: Number(price), category, available });
+      addMenuItem({ name, price: Number(price), category, available, image });
       toast({ title: 'Added', description: `${name} has been added to the menu.` });
     }
     setDialogOpen(false);
     resetForm();
+  };
+
+  const handleFileUpload = (file: File) => {
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: 'Error', description: 'File size exceeds 10MB limit.', variant: 'destructive' });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        setImage(e.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      handleFileUpload(file);
+    }
   };
 
   const handleDelete = (id: string) => {
@@ -126,33 +159,95 @@ const MenuManagement = () => {
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle>{editingId ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 mt-2">
-              <div className="space-y-2">
-                <Label>Item Name</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., Butter Chicken" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Item Name</Label>
+                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., Butter Chicken" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Price (₹)</Label>
+                  <Input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g., 350" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label>Available</Label>
+                  <Switch checked={available} onCheckedChange={setAvailable} />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Price (₹)</Label>
-                <Input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g., 350" />
+
+              <div className="space-y-4">
+                <Label>Image Source</Label>
+                <Tabs value={imageSourceType} onValueChange={setImageSourceType} className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="url">URL</TabsTrigger>
+                    <TabsTrigger value="upload">Upload</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="url" className="mt-4">
+                    <div className="space-y-2">
+                      <Label>Image URL</Label>
+                      <div className="flex relative">
+                        <LinkIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="https://example.com/image.jpg"
+                          value={imageSourceType === 'url' ? image : ''}
+                          onChange={(e) => setImage(e.target.value)}
+                          className="pl-9"
+                        />
+                      </div>
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="upload" className="mt-4">
+                    <div
+                      className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-muted/50 transition-colors"
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={handleDrop}
+                      onClick={() => document.getElementById('image-upload')?.click()}
+                    >
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file);
+                        }}
+                      />
+                      <UploadCloud className="h-8 w-8 text-muted-foreground mb-3" />
+                      <p className="font-medium text-sm">Click or drag image here</p>
+                      <p className="text-xs text-muted-foreground mt-1">Max file size: 10MB</p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                <div className="mt-4">
+                  <Label className="mb-2 block">Image Preview</Label>
+                  <div className="border rounded-md aspect-video w-full flex items-center justify-center overflow-hidden bg-muted/30">
+                    {image ? (
+                      <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No image available</p>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center justify-between">
-                <Label>Available</Label>
-                <Switch checked={available} onCheckedChange={setAvailable} />
-              </div>
-              <Button onClick={handleSave} className="w-full">
+            </div>
+
+            <div className="mt-6 pt-4 border-t flex justify-end">
+              <Button onClick={handleSave} className="w-full md:w-auto px-8">
                 {editingId ? 'Update Item' : 'Add Item'}
               </Button>
             </div>
