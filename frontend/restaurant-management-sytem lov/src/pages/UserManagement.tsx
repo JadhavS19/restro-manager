@@ -70,7 +70,7 @@ const UserManagement = () => {
                         </p>
                     </div>
                     <Button
-                        variant="glow"
+                        variant="default"
                         size="lg"
                         onClick={handleRefresh}
                         disabled={isRefreshing}
