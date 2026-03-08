@@ -91,7 +91,7 @@ npm run dev
 4. **Completion:** Kitchen marks the order "Ready" for serving.
 
 ---
-
+## Live Demo: https://tanisha-restro-manager.up.railway.app
 ## 📄 License
 This project is licensed under the ISC License.
 
